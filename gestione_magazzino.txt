@@ -1,0 +1,20 @@
+Gestione di un magazzino con Spring
+
+Si vuole sviluppare un'applicazione per la gestione di un magazzino che contiene diversi tipi di prodotti. Ogni prodotto è caratterizzato da un codice, una descrizione, un prezzo unitario e una quantità disponibile. L'applicazione deve consentire di effettuare le seguenti operazioni:
+
+- Visualizzazione dell'elenco dei prodotti presenti nel magazzino
+- Aggiunta di un nuovo prodotto al magazzino
+- Aggiornamento dei dati di un prodotto presente nel magazzino
+- Rimozione di un prodotto dal magazzino
+- Vendita di uno o più prodotti presenti nel magazzino, aggiornando la quantità disponibile
+
+
+Dopo aver analizzato il testo:
+ 
+•    Crea  un nuovo progetto chiamato GestionePrenotazioni ed imposta le dipendenze necessarie
+•    Crea le entità che modellano il dominio applicativo
+•    Crea i repository di Spring Data necessari a garantire le operazioni CRUD
+•    Imposta le proprietà necessarie per l’interazione con il db
+•    Imposta il logging su file e console
+•    Predisponi una serie di dati di test per l'inizializzazione del database sfruttando i metodi offerti dai repository.
+ 

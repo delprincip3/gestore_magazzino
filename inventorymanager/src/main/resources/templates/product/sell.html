@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vendi Prodotto</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0071e3;
+            --secondary-color: #34c759;
+            --accent-color: #5e5ce6;
+            --light-bg: #f5f5f7;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --border-radius: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.07);
+            --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: var(--font-family);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .main-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            max-width: 1200px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--secondary-color), #30d158);
+            color: white;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .product-card {
+            border: none;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            background-color: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-5px);
+        }
+
+        .product-card .card-header {
+            background-color: rgba(0, 0, 0, 0.04);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            padding: 1.25rem;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .product-info i {
+            width: 28px;
+            text-align: center;
+            margin-right: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .form-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            padding: 2rem;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-action {
+            padding: 0.6rem 1.8rem;
+            border-radius: 50rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stock-badge {
+            padding: 0.35rem 0.65rem;
+            border-radius: 50rem;
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            background: var(--secondary-color);
+        }
+
+        .form-range::-moz-range-thumb {
+            background: var(--secondary-color);
+        }
+
+        .form-range::-ms-thumb {
+            background: var(--secondary-color);
+        }
+
+        .quantity-input {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .alert {
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .input-group .btn {
+            border-radius: 8px;
+        }
+
+        .input-group .form-control {
+            border-radius: 8px;
+            height: 45px;
+        }
+
+        /* Animazioni */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .header, .product-card, .form-container {
+                padding: 1.25rem;
+            }
+            
+            .product-card .card-body {
+                padding: 1.25rem;
+            }
+        }
+
+        footer {
+            background: linear-gradient(135deg, #1d1d1f, #313133);
+            padding: 1.5rem 0;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-top: 3rem !important;
+        }
+
+        .input-group-text {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.375rem 0.75rem;
+            height: 45px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        /* Stile specifico per il simbolo dell'euro */
+        .currency-symbol {
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        
+        /* Uniformare il formato del prezzo nell'alert */
+        .price-value {
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="header d-flex justify-content-between align-items-center animated">
+            <h2 class="mb-0"><i class="fas fa-shopping-cart"></i> Vendi Prodotto</h2>
+            <div>
+                <a href="/index" class="btn btn-light me-2"><i class="fas fa-home"></i> Home</a>
+                <a href="/products" class="btn btn-primary"><i class="fas fa-list"></i> Elenco Prodotti</a>
+            </div>
+        </div>
+        
+        <div class="alert alert-danger d-flex align-items-center animated" th:if="${param.error}">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <div>Quantità richiesta non disponibile. La quantità massima disponibile è <strong th:text="${product.quantity}"></strong>.</div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="product-card animated delay-1">
+                    <div class="card-header">
+                        <i class="fas fa-box"></i> Dettagli Prodotto
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title mb-4" th:text="${product.description}">Nome Prodotto</h4>
+                        
+                        <div class="product-info">
+                            <i class="fas fa-barcode"></i>
+                            <span>Codice: <strong th:text="${product.code}" class="ms-2"></strong></span>
+                        </div>
+                        
+                        <div class="product-info">
+                            <i class="fas fa-tag"></i>
+                            <span>Prezzo: <strong th:text="${'€ ' + #numbers.formatDecimal(product.unitPrice, 1, 2)}" class="ms-2 text-success"></strong></span>
+                        </div>
+                        
+                        <div class="product-info">
+                            <i class="fas fa-cubes"></i>
+                            <span>Quantità disponibile: 
+                                <span th:class="${product.quantity > 10 ? 'badge bg-success stock-badge' : (product.quantity > 5 ? 'badge bg-warning stock-badge' : 'badge bg-danger stock-badge')}"
+                                      th:text="${product.quantity}"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="form-container animated delay-2">
+                    <h4 class="mb-4 text-center">Vendita</h4>
+                    
+                    <form th:action="@{/products/sell/{id}(id=${product.code})}" method="post">
+                        <div class="mb-4">
+                            <label for="quantity" class="form-label">Quantità da vendere:</label>
+                            <input type="range" class="form-range mb-2" id="quantityRange" 
+                                  min="1" th:max="${product.quantity}" value="1"
+                                  oninput="updateInputValue(this.value)">
+                                  
+                            <div class="quantity-input">
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="decrementValue()">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="form-control text-center" id="quantity" name="quantity" 
+                                          th:value="${quantity}" min="1" th:max="${product.quantity}" required
+                                          oninput="updateRangeValue(this.value)">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="incrementValue()">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <div class="d-flex justify-content-between">
+                                <span>Prezzo unitario:</span>
+                                <strong class="price-value" th:text="${'€ ' + #numbers.formatDecimal(product.unitPrice, 1, 2)}"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Quantità:</span>
+                                <strong id="displayQuantity">1</strong>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span>Totale:</span>
+                                <strong id="totalPrice" class="price-value" th:data-price="${product.unitPrice}">€ 0.00</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="/products" class="btn btn-secondary btn-action">
+                                <i class="fas fa-arrow-left me-2"></i>Indietro
+                            </a>
+                            <button type="submit" class="btn btn-success btn-action">
+                                <i class="fas fa-check me-2"></i>Conferma Vendita
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2025 Sistema di Gestione Magazzino | Tutti i diritti riservati</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateInputValue(val) {
+            document.getElementById('quantity').value = val;
+            updateTotalPrice(val);
+        }
+        
+        function updateRangeValue(val) {
+            document.getElementById('quantityRange').value = val;
+            updateTotalPrice(val);
+        }
+        
+        function incrementValue() {
+            const input = document.getElementById('quantity');
+            const max = parseInt(input.max);
+            let value = parseInt(input.value) || 0;
+            if (value < max) {
+                input.value = value + 1;
+                updateRangeValue(input.value);
+            }
+        }
+        
+        function decrementValue() {
+            const input = document.getElementById('quantity');
+            let value = parseInt(input.value) || 0;
+            if (value > 1) {
+                input.value = value - 1;
+                updateRangeValue(input.value);
+            }
+        }
+        
+        function updateTotalPrice(quantity) {
+            const priceElement = document.getElementById('totalPrice');
+            const unitPrice = parseFloat(priceElement.getAttribute('data-price'));
+            const total = unitPrice * quantity;
+            priceElement.textContent = '€ ' + total.toFixed(2);
+            document.getElementById('displayQuantity').textContent = quantity;
+        }
+        
+        // Inizializzazione
+        updateTotalPrice(document.getElementById('quantity').value);
+    </script>
+</body>
+</html> 

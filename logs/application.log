@@ -461,3 +461,5 @@ java.nio.channels.AsynchronousCloseException: null
 2025-03-08 15:03:38 - INFO - [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-03-08 15:03:38 - INFO - [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
 2025-03-08 15:03:38 - INFO - [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet - Completed initialization in 20 ms
+2025-03-08 15:21:39 - WARN - [HikariPool-10 housekeeper] com.zaxxer.hikari.pool.HikariPool - HikariPool-10 - Thread starvation or clock leap detected (housekeeper delta=1m39s853ms).
+2025-03-08 15:22:36 - WARN - [HikariPool-10 housekeeper] com.zaxxer.hikari.pool.HikariPool - HikariPool-10 - Thread starvation or clock leap detected (housekeeper delta=56s675ms).

@@ -1,7 +1,11 @@
 package com.inventorymanager.webcontroller;
 
+import com.inventorymanager.model.Customer;
 import com.inventorymanager.model.Product;
+import com.inventorymanager.model.Purchase;
+import com.inventorymanager.service.CustomerService;
 import com.inventorymanager.service.ProductService;
+import com.inventorymanager.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +22,12 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private PurchaseService purchaseService;
 
     // Lista di tutti i prodotti
     @GetMapping
@@ -81,7 +91,11 @@ public class ProductController {
     public String showSellForm(@PathVariable String id, Model model) {
         Product product = productService.findProductById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Prodotto non valido con codice: " + id));
+        
+        List<Customer> customers = customerService.getAllCustomers();
+        
         model.addAttribute("product", product);
+        model.addAttribute("customers", customers);
         model.addAttribute("quantity", 1);
         return "product/sell";
     }
@@ -90,10 +104,29 @@ public class ProductController {
     @PostMapping("/sell/{id}")
     public String sellProduct(@PathVariable String id, 
                              @RequestParam("quantity") int quantity,
+                             @RequestParam("customerId") Long customerId,
                              RedirectAttributes redirectAttributes) {
         try {
+            Product product = productService.findProductById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Prodotto non valido con codice: " + id));
+            
+            Customer customer = customerService.getCustomerById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente non valido con ID: " + customerId));
+            
+            // Creare una nuova vendita
+            Purchase purchase = new Purchase();
+            purchase.setProduct(product);
+            purchase.setCustomer(customer);
+            purchase.setQuantity(quantity);
+            purchase.setDate(java.time.LocalDate.now());
+            
+            // Salvare la vendita
+            purchaseService.savePurchase(purchase);
+            
+            // Aggiornare la quantità del prodotto
             productService.sellProduct(id, quantity);
-            return "redirect:/products";
+            
+            return "redirect:/invoices";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addAttribute("error", true);
             return "redirect:/products/sell/" + id;

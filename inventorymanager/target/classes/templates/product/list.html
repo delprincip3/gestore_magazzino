@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista Prodotti</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0071e3;
+            --secondary-color: #34c759;
+            --accent-color: #5e5ce6;
+            --light-bg: #f5f5f7;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --border-radius: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.07);
+            --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: var(--font-family);
+            color: var(--text-primary);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            max-width: 1200px;
+            flex: 1 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .btn-action {
+            border-radius: 50rem;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.85rem;
+            margin-right: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .table {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            background-color: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .badge-stock {
+            padding: 0.35rem 0.65rem;
+            border-radius: 50rem;
+            font-weight: normal;
+        }
+
+        .product-code {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: transparent;
+            border: none;
+        }
+
+        /* Animazioni */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animated {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.25rem;
+            }
+            
+            .table-responsive {
+                border-radius: var(--border-radius);
+                overflow: hidden;
+            }
+            
+            .btn-action {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.7rem;
+            }
+        }
+
+        footer {
+            background: linear-gradient(135deg, #1d1d1f, #313133);
+            padding: 1.5rem 0;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        /* Stili per il modal di conferma eliminazione */
+        .modal-content {
+            border-radius: var(--border-radius);
+            border: none;
+            background-color: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .modal-header, .modal-footer {
+            border: none;
+        }
+        
+        .modal-header .btn-close {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            padding: 0.5rem;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .product-code {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Animazione per il modal */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        
+        .modal.show .modal-dialog {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Miglioramenti per la visualizzazione mobile della tabella */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--border-radius);
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        /* Assicuriamo che la tabella e le celle abbiano larghezza sufficiente in mobile */
+        @media (max-width: 768px) {
+            .table {
+                min-width: 600px; /* Larghezza minima per assicurare che tutte le colonne siano visibili */
+            }
+            
+            .table-responsive {
+                padding-bottom: 0.5rem; /* Spazio per scrollbar */
+            }
+            
+            .btn-action {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+                margin-right: 0.125rem;
+                white-space: nowrap;
+            }
+            
+            .product-code {
+                font-size: 0.8rem;
+                padding: 0.1rem 0.3rem;
+            }
+            
+            /* Visualizzazione alternativa per mobile - card invece di tabella */
+            .product-cards-mobile {
+                display: none;
+            }
+        }
+        
+        /* Per schermi molto piccoli, passiamo a una visualizzazione a card */
+        @media (max-width: 576px) {
+            .table-view {
+                display: none;
+            }
+            
+            .product-cards-mobile {
+                display: block;
+            }
+            
+            .product-card-mobile {
+                background-color: var(--card-bg);
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow-sm);
+                padding: 1rem;
+                margin-bottom: 1rem;
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+            }
+            
+            .product-card-mobile .card-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.75rem;
+            }
+            
+            .product-card-mobile .product-details {
+                margin-bottom: 1rem;
+            }
+            
+            .product-card-mobile .btn-group {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            
+            .product-card-mobile .btn-group .btn {
+                flex: 1;
+                margin: 0.25rem;
+                text-align: center;
+            }
+        }
+
+        /* Nascondiamo le card in modalità desktop */
+        .product-cards-mobile {
+            display: none;
+        }
+        
+        /* Vista tabella sempre visibile per schermi grandi e medi */
+        .table-view {
+            display: block;
+        }
+
+        /* Stile specifico per il simbolo dell'euro e i prezzi */
+        .price-value {
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="header d-flex justify-content-between align-items-center animated">
+            <h2 class="mb-0"><i class="fas fa-boxes"></i> Lista Prodotti</h2>
+            <div>
+                <a href="/index" class="btn btn-light me-2"><i class="fas fa-home"></i> Home</a>
+                <a href="/products/add" class="btn btn-success"><i class="fas fa-plus"></i> Aggiungi Prodotto</a>
+            </div>
+        </div>
+        
+        <div th:if="${products.empty}" class="empty-state animated delay-1">
+            <i class="fas fa-dolly-flatbed"></i>
+            <h4>Non ci sono prodotti nel magazzino</h4>
+            <p class="text-muted">Aggiungi un nuovo prodotto per iniziare a gestire il tuo inventario</p>
+            <a href="/products/add" class="btn btn-primary mt-2"><i class="fas fa-plus"></i> Aggiungi Primo Prodotto</a>
+        </div>
+        
+        <div th:unless="${products.empty}" class="card animated delay-1">
+            <div class="card-body p-0">
+                <!-- Vista tabella per desktop e tablet -->
+                <div class="table-responsive table-view">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Codice</th>
+                                <th>Descrizione</th>
+                                <th>Prezzo Unitario</th>
+                                <th>Quantità</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td><span class="product-code" th:text="${product.code}"></span></td>
+                                <td th:text="${product.description}"></td>
+                                <td class="price-value text-end" th:text="${'€ ' + #numbers.formatDecimal(product.unitPrice, 1, 2)}"></td>
+                                <td>
+                                    <span th:class="${product.quantity > 10 ? 'badge bg-success badge-stock' : (product.quantity > 5 ? 'badge bg-warning badge-stock' : 'badge bg-danger badge-stock')}"
+                                          th:text="${product.quantity}"></span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a th:href="@{/products/edit/{id}(id=${product.code})}" class="btn btn-warning btn-action">
+                                            <i class="fas fa-edit"></i> Modifica
+                                        </a>
+                                        <a th:href="@{/products/sell/{id}(id=${product.code})}" class="btn btn-success btn-action">
+                                            <i class="fas fa-shopping-cart"></i> Vendi
+                                        </a>
+                                        <a th:href="@{/products/delete/{id}(id=${product.code})}" class="btn btn-danger btn-action" 
+                                           onclick="return confirmDelete(this, event)">
+                                            <i class="fas fa-trash-alt"></i> Elimina
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Vista alternativa per dispositivi mobili molto piccoli -->
+                <div class="product-cards-mobile">
+                    <div th:each="product : ${products}" class="product-card-mobile animated" th:classappend="${'delay-' + productStat.count % 3}">
+                        <div class="card-title">
+                            <span class="product-code" th:text="${product.code}"></span>
+                            <span th:class="${product.quantity > 10 ? 'badge bg-success badge-stock' : (product.quantity > 5 ? 'badge bg-warning badge-stock' : 'badge bg-danger badge-stock')}"
+                                  th:text="${product.quantity}"></span>
+                        </div>
+                        
+                        <div class="product-details">
+                            <p class="mb-1" th:text="${product.description}"></p>
+                            <p class="mb-0 fw-bold" th:text="${'€ ' + #numbers.formatDecimal(product.unitPrice, 1, 2)}"></p>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <a th:href="@{/products/edit/{id}(id=${product.code})}" class="btn btn-warning btn-action">
+                                <i class="fas fa-edit"></i> Modifica
+                            </a>
+                            <a th:href="@{/products/sell/{id}(id=${product.code})}" class="btn btn-success btn-action">
+                                <i class="fas fa-shopping-cart"></i> Vendi
+                            </a>
+                            <a th:href="@{/products/delete/{id}(id=${product.code})}" class="btn btn-danger btn-action" 
+                               onclick="return confirmDelete(this, event)">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2025 Sistema di Gestione Magazzino | Tutti i diritti riservati</p>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="deleteModalLabel">Conferma Eliminazione</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-4">
+                        <i class="fas fa-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>Sei sicuro di voler eliminare questo prodotto?</h5>
+                    <p class="text-muted mb-0">Codice: <span id="deleteProductCode" class="product-code"></span></p>
+                    <p class="text-muted" id="deleteProductDesc"></p>
+                    <p class="text-danger small">Questa azione non può essere annullata.</p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary btn-action px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Annulla
+                    </button>
+                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger btn-action px-4">
+                        <i class="fas fa-trash-alt me-2"></i>Elimina
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        var deleteModal;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var modalElement = document.getElementById('deleteConfirmModal');
+            if (modalElement) {
+                deleteModal = new bootstrap.Modal(modalElement);
+            }
+        });
+        
+        function confirmDelete(element, event) {
+            event.preventDefault();
+            
+            // Verifichiamo se siamo in vista tabella o vista card
+            var row = element.closest('tr');
+            var card = element.closest('.product-card-mobile');
+            
+            var code, description, deleteUrl;
+            deleteUrl = element.getAttribute('href');
+            
+            if (row) {
+                // Vista tabella
+                code = row.querySelector('.product-code').textContent;
+                description = row.cells[1].textContent;
+            } else if (card) {
+                // Vista card mobile
+                code = card.querySelector('.product-code').textContent;
+                description = card.querySelector('.product-details p:first-child').textContent;
+            } else {
+                // Fallback nel caso non trovassimo né riga né card
+                code = "Prodotto";
+                description = "Dettagli non disponibili";
+            }
+            
+            document.getElementById('deleteProductCode').textContent = code;
+            document.getElementById('deleteProductDesc').textContent = description;
+            document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
+            
+            if (deleteModal) {
+                deleteModal.show();
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html> 

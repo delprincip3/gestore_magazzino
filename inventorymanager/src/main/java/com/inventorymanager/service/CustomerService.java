@@ -34,4 +34,10 @@ public class CustomerService {
     public void deleteCustomer(Long id) {
         customerRepository.deleteById(id);
     }
+
+    public Optional<Customer> findByCodiceFiscale(String codiceFiscale) {
+        return customerRepository.findAll().stream()
+                .filter(c -> c.getCodiceFiscale().equals(codiceFiscale))
+                .findFirst();
+    }
 }

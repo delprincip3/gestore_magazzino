@@ -17,10 +17,9 @@ public class Customer {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
     private Long id;
-    private String username;
-    private String password;
-    private String email;
-    private String shipping_address;
+    private String nome;
+    private String cognome;
+    private String codiceFiscale;
     
 }
 

@@ -30,4 +30,19 @@ public class MenuController {
     public String venditaProdotti() {
         return "redirect:/products";
     }
+    
+    @GetMapping("/clienti")
+    public String listaClienti() {
+        return "redirect:/customers";
+    }
+    
+    @GetMapping("/nuovocliente")
+    public String aggiungiCliente() {
+        return "redirect:/customers/add";
+    }
+    
+    @GetMapping("/fatture")
+    public String listaFatture() {
+        return "redirect:/invoices";
+    }
 }

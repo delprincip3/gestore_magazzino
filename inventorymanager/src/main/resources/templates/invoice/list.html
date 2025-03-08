@@ -70,145 +70,201 @@
         }
 
         .table {
+            background-color: var(--card-bg);
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
-            background-color: var(--card-bg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
-        .table th {
-            background-color: rgba(0, 0, 0, 0.04);
-            font-weight: 600;
+        .table thead th {
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: rgba(0, 0, 0, 0.02);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 1rem 0.75rem;
         }
 
-        .table td, .table th {
-            padding: 0.75rem 1rem;
+        .table tbody td {
+            padding: 1rem 0.75rem;
             vertical-align: middle;
         }
 
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
         .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
             background-color: var(--card-bg);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-sm);
-            padding: 3rem 2rem;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.18);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
 
         .empty-state i {
             font-size: 4rem;
-            color: var(--text-secondary);
+            color: var(--accent-color);
             margin-bottom: 1.5rem;
+            opacity: 0.8;
         }
 
         .empty-state h4 {
-            font-weight: 600;
             margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
         .empty-state p {
             color: var(--text-secondary);
-            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
         }
-
-        /* Animazioni */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animated {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
 
         footer {
-            background: linear-gradient(135deg, #1d1d1f, #313133);
-            padding: 1.5rem 0;
+            background-color: var(--primary-color);
             margin-top: auto;
             border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
 
-        /* Responsive design improvements */
-        @media (max-width: 992px) {
+        .animated {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        /* Stili responsivi */
+        @media (max-width: 991.98px) {
+            .header {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .empty-state {
+                padding: 3rem 1.5rem;
+            }
+            
+            .empty-state i {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            /* Nascondiamo la tabella su schermi piccoli */
+            .table-view {
+                display: none !important;
+            }
+            
+            /* Mostriamo le card su schermi piccoli */
+            .invoice-cards-mobile {
+                display: block !important;
+            }
+            
+            .header .btn-text {
+                display: none;
+            }
+            
+            .header .btn {
+                padding: 0.375rem 0.5rem;
+            }
+            
+            .empty-state {
+                padding: 2.5rem 1rem;
+            }
+        }
+
+        /* Stili per le card mobili */
+        .invoice-cards-mobile {
+            display: none;
+        }
+        
+        .invoice-card-mobile {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .invoice-card-mobile .card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .invoice-card-mobile .invoice-details {
+            margin-bottom: 1rem;
+        }
+        
+        .invoice-card-mobile .btn-group {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .invoice-card-mobile .btn-group .btn {
+            flex: 1;
+            margin: 0.25rem;
+            text-align: center;
+        }
+        
+        /* Classe per testo che si riduce su mobile */
+        .responsive-text {
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 575.98px) {
+            .responsive-text {
+                font-size: 0.875rem;
+            }
+            
             .header {
                 flex-direction: column;
                 align-items: flex-start !important;
             }
             
-            .header div {
-                margin-top: 0.75rem;
-                align-self: flex-start;
-            }
-            
-            /* Visualizzazione alternativa per mobile - card invece di tabella */
-            .invoice-cards-mobile {
-                display: none;
-            }
-        }
-        
-        /* Per schermi molto piccoli, passiamo a una visualizzazione a card */
-        @media (max-width: 576px) {
-            .table-view {
-                display: none;
-            }
-            
-            .invoice-cards-mobile {
-                display: block;
+            .header .btn-group {
+                margin-top: 1rem;
+                align-self: flex-end;
             }
             
             .invoice-card-mobile {
-                background-color: var(--card-bg);
-                border-radius: var(--border-radius);
-                box-shadow: var(--shadow-sm);
                 padding: 1rem;
-                margin-bottom: 1rem;
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                border: 1px solid rgba(255, 255, 255, 0.18);
             }
-            
-            .invoice-card-mobile .card-title {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 0.75rem;
-            }
-            
-            .invoice-card-mobile .invoice-details {
-                margin-bottom: 1rem;
-            }
-            
-            .invoice-card-mobile .btn-group {
-                display: flex;
-                justify-content: space-between;
-                flex-wrap: wrap;
-            }
-            
-            .invoice-card-mobile .btn-group .btn {
-                flex: 1;
-                margin: 0.25rem;
-                text-align: center;
-            }
-        }
-
-        /* Nascondiamo le card in modalità desktop */
-        .invoice-cards-mobile {
-            display: none;
-        }
-        
-        /* Vista tabella sempre visibile per schermi grandi e medi */
-        .table-view {
-            display: block;
         }
     </style>
 </head>
@@ -216,17 +272,23 @@
     <div class="container main-container">
         <div class="header d-flex justify-content-between align-items-center animated">
             <h2 class="mb-0"><i class="fas fa-file-invoice"></i> Lista Fatture</h2>
-            <div>
-                <a href="/index" class="btn btn-light me-2"><i class="fas fa-home"></i> Home</a>
-                <a href="/products" class="btn btn-primary"><i class="fas fa-boxes"></i> Prodotti</a>
+            <div class="btn-group">
+                <a href="/index" class="btn btn-light me-2">
+                    <i class="fas fa-home"></i> 
+                    <span class="btn-text">Home</span>
+                </a>
+                <a href="/products" class="btn btn-primary">
+                    <i class="fas fa-boxes"></i> 
+                    <span class="btn-text">Prodotti</span>
+                </a>
             </div>
         </div>
         
         <div th:if="${purchases.empty}" class="empty-state animated delay-1">
             <i class="fas fa-file-invoice-dollar"></i>
             <h4>Non ci sono fatture registrate</h4>
-            <p class="text-muted">I dati delle vendite appariranno qui quando verranno registrate delle vendite.</p>
-            <a href="/products" class="btn btn-primary btn-lg">
+            <p class="text-secondary">Non hai ancora registrato alcuna vendita. Vendi prodotti per generare fatture.</p>
+            <a href="/products" class="btn btn-success btn-action">
                 <i class="fas fa-shopping-cart me-2"></i>Vendi Prodotti
             </a>
         </div>
@@ -274,11 +336,11 @@
                         <span class="badge bg-primary" th:text="${#temporals.format(purchase.date, 'dd/MM/yyyy')}"></span>
                     </div>
                     <div class="invoice-details">
-                        <p><strong>Prodotto:</strong> <span th:text="${purchase.product.description}"></span></p>
-                        <p><strong>Cliente:</strong> <span th:text="${purchase.customer.nome + ' ' + purchase.customer.cognome}"></span></p>
-                        <p><strong>Quantità:</strong> <span th:text="${purchase.quantity}"></span></p>
-                        <p><strong>Prezzo unitario:</strong> <span th:text="${'€ ' + #numbers.formatDecimal(purchase.product.unitPrice, 1, 2)}"></span></p>
-                        <p><strong>Totale:</strong> <span th:text="${'€ ' + #numbers.formatDecimal(purchase.product.unitPrice * purchase.quantity, 1, 2)}"></span></p>
+                        <p class="responsive-text mb-1"><strong>Prodotto:</strong> <span th:text="${purchase.product.description}"></span></p>
+                        <p class="responsive-text mb-1"><strong>Cliente:</strong> <span th:text="${purchase.customer.nome + ' ' + purchase.customer.cognome}"></span></p>
+                        <p class="responsive-text mb-1"><strong>Quantità:</strong> <span th:text="${purchase.quantity}"></span></p>
+                        <p class="responsive-text mb-1"><strong>Prezzo unitario:</strong> <span th:text="${'€ ' + #numbers.formatDecimal(purchase.product.unitPrice, 1, 2)}"></span></p>
+                        <p class="responsive-text mb-1"><strong>Totale:</strong> <span th:text="${'€ ' + #numbers.formatDecimal(purchase.product.unitPrice * purchase.quantity, 1, 2)}"></span></p>
                     </div>
                     <div class="btn-group">
                         <a th:href="@{/invoices/{id}(id=${purchase.id})}" class="btn btn-info btn-action btn-sm">
